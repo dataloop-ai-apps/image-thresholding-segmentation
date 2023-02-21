@@ -1,3 +1,4 @@
 dtlpy
-fastapi
-uvicorm
+opencv-python
+numpy
+Pillow

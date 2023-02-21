@@ -1,26 +1,93 @@
 {
-    "id": "1",
-    "version": "1.0.0",
-    "creator": "abc@dataloop.ai",
-    "name": "app-name",
-    "displayName": "App display name",
-    "description": "Description",
-    "icon": "",
-    "categories": [],
-    "source": {
-      "type": "git",
-      "repo": "https://github.com/dataloop-ai-apps/opencv-face-detection.git",
-      "tag": ""
-    },
-    "scope": "organization",
-    "components": {
-      "panels": [],
-      "hooks": [],
-      "modules": [],
-      "services": [],
-      "triggers": [],
-      "pipelines": [],
-      "models": [],
-      "snapshots": []
-    }
+  "version": "1.0.0",
+  "name": "image-thresholding-segmentation",
+  "displayName": "Make gray mask",
+  "description": "A simple python app to right-click an item and create a segmentation mask using gray scale threshold",
+  "categories": [
+    "python",
+    "opencv"
+  ],
+  "source": {
+    "type": "git",
+    "repo": "https://github.com/dataloop-ai-apps/image-thresholding-segmentation",
+    "tag": "main"
+  },
+  "scope": "organization",
+  "components": {
+    "toolbars": [
+      {
+        "displayName": "Create thresholding mask",
+        "invoke": {
+          "type": "function",
+          "namespace": "gray-mask.make_mask"
+        },
+        "icon": "icon-dl-annotation-studio-filled",
+        "location": "itemMenu",
+        "conditions": {
+          "resources": []
+        }
+      },
+      {
+        "displayName": "Create thresholding mask",
+        "invoke": {
+          "type": "function",
+          "namespace": "gray-mask.make_mask"
+        },
+        "icon": "icon-dl-annotation-studio",
+        "location": "itemStudio",
+        "conditions": {
+          "resources": []
+        }
+      }
+    ],
+    "modules": [
+      {
+        "name": "gray-mask",
+        "entryPoint": "modules/main.py",
+        "className": "GrayMaskService",
+        "functions": [
+          {
+            "name": "make_mask",
+            "description": "Creates segmentation mask from grayscale image",
+            "input": [
+              {
+                "type": "Item",
+                "name": "item"
+              },
+              {
+                "type": "int",
+                "name": "threshold"
+              },
+              {
+                "type": "str",
+                "name": "label"
+              }
+            ],
+            "output": [],
+            "displayIcon": ""
+          }
+        ]
+      }
+    ],
+    "services": [
+      {
+        "name": "gray-mask",
+        "moduleName": "gray-mask",
+        "runtime": {
+          "podType": "regular-xs",
+          "numReplicas": 1,
+          "concurrency": 10,
+          "runnerImage": "dataloopai/dtlpy-agent:cpu.py3.8.opencv4.7",
+          "pyPackages": {},
+          "singleAgent": false,
+          "autoscaler": {
+            "type": "rabbitmq",
+            "minReplicas": 0,
+            "maxReplicas": 1,
+            "queueLength": 10
+          }
+        }
+      }
+    ]
   }
+}
