@@ -29,20 +29,17 @@ class GrayMaskService(dl.BaseServiceRunner):
         import cv2
         import numpy as np
 
-        item = dl.items.get(item_id='63f49692f0c8ab801a8a9713')
-        # item = dl.items.get(item_id='63f4cd2498c5d9e81c26bbcd') # CNY
-        # item = dl.items.get(item_id='63f4cd03d73a0c2de87f7ac8') # crossword
         buffer = item.download(save_locally=False)
         img = cv2.imdecode(np.frombuffer(buffer.read(), np.uint8), cv2.IMREAD_GRAYSCALE)
 
         assert len(img.shape) < 3, "Image must be grayscale"
 
         img = img.copy()
-        ret, mask = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY_INV)
+        ret, mask = cv2.threshold(img, threshold, 255, cv2.THRESH_BINARY_INV)
 
-        import matplotlib.pyplot as plt
-        plt.imshow(mask, cmap='gray')
-        plt.show()
+        # import matplotlib.pyplot as plt
+        # plt.imshow(mask, cmap='gray')
+        # plt.show()
 
         builder = item.annotations.builder()
         builder.add(annotation_definition=dl.Segmentation(geo=mask,
